@@ -1,28 +1,18 @@
-# Use the official Golang image to create a build artifact.
-# This is based on Debian and sets the GOPATH to /go.
-# https://hub.docker.com/_/golang
-FROM golang:1.12 as builder
+﻿FROM davexacom/ace11002mqc91soe:latest
 
-# Copy local code to the container image.
-WORKDIR /go/src/github.com/IBM/tekton-tutorial
-COPY picalc.go picalc_test.go .
+ENV BAR1=Microservice2.bar
 
-# Run unit tests
-RUN CGO_ENABLED=0 GOOS=linux go test
+# Copy in the bar file to a temporary directory
+COPY --chown=aceuser ./acesoe/binary/$BAR1 /tmp
+# DA switch to and from root if using Kaniko build
+#USER root
+# Unzip the BAR file; need to use bash to make the profile work
+RUN bash -c 'mqsibar -w /home/aceuser/ace-server -a /tmp/$BAR1 -c'
+#USER aceuser
+# Switch off the admin REST API for the server run if required
+#DA RUN sed -i 's/adminRestApiPort/#adminRestApiPort/g' /home/aceuser/ace-server/server.conf.yaml 
 
-# Build the code inside the container.
-RUN CGO_ENABLED=0 GOOS=linux go build -v -o picalc
+# We inherit the command from the base layer
 
-# Use a Docker multi-stage build to create a lean production image.
-# https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
-FROM alpine
-
-# Copy the binary to the production image from the builder stage.
-COPY --from=builder /go/src/github.com/IBM/tekton-tutorial/picalc /picalc
-
-# Service must listen to $PORT environment variable.
-# This default value facilitates local development.
-ENV PORT 8080
-
-# Run the web service on container startup.
-CMD ["/picalc"]
+# Expose ports
+EXPOSE 7800
