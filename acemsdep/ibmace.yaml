@@ -4,6 +4,27 @@ metadata:
   name: tt-ibm-ace-mqc-soe-ms2-build
   namespace: da-build-project
 spec:
+  strategy:
+    type: Rolling
+    rollingParams:
+      updatePeriodSeconds: 1
+      intervalSeconds: 1
+      timeoutSeconds: 600
+      maxUnavailable: 25%
+      maxSurge: 25%
+    resources: {}
+    activeDeadlineSeconds: 21600
+  triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - ace11002mqc91ms2
+        from:
+          kind: ImageStreamTag
+          namespace: da-build-project
+          name: 'ace11002mqc91ms2:latest'
   replicas: 1
   selector:
     app: tt-ibm-ace-mqc-soe-ms2-build
@@ -15,7 +36,7 @@ spec:
         deploymentconfig: ibm-ace-mqc-soe-ms2-build
     spec:
       containers:
-        - name: ibm-ace-mqc-soe-ms2-build
+        - name: ace11002mqc91ms2
           image: >-
             __IMAGE__
           ports:

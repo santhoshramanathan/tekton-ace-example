@@ -30,15 +30,11 @@ spec:
   - name: build
     image: quay.io/buildah/stable:v1.11.0
     workingDir: /workspace/source
-# https://github.com/openshift/pipelines-tutorial the doco here says the example pipeline does a clone as step 1 but I see no evidence of a clone hence no dockerfile in working dir    
-#    command: ['buildah', 'bud', '--tls-verify=$(inputs.params.TLSVERIFY)', '--layers', '-f', '$(inputs.params.pathToContext):$(inputs.params.pathToDockerFile)', '-t', '$(inputs.params.imageUrl):$(inputs.params.imageTag)', '.']
-#    command: ['buildah', 'bud', 'github.com/DAVEXACOM/ibm-ace-mqc-soe-ms2-build']
-#    command: ['buildah', 'bud', '$(inputs.resources.git-source.url)']
-  
-#    command: ['buildah', 'bud', 'github.com/DAVEXACOM/ibm-ace-mqc-soe-ms2-build' ,'ace11002mqc91soe:latest' '-t' 'ace11002mqc91msDA:latest']
-    command: ['buildah', 'bud', '-t', 'ace11002mqc91ms2:latest','github.com/DAVEXACOM/ibm-ace-mqc-soe-ms2-build']
-#    command: ['buildah', 'bud', '--tls-verify=false', 'github.com/DAVEXACOM/ibm-ace-mqc-soe-ms2-build','ace11002mqc91msDA:latest']
-#    command: ['buildah', 'bud', '--tls-verify=false','--layers', '-f', './Dockerfile', '-t' ,'image-registry.openshift-image-registry.svc:5000/ace11002mqc91msDA:latest']
+#   command: ['buildah', 'bud', '--tls-verify=$(inputs.params.TLSVERIFY)', '--layers', '-f', '$(inputs.params.pathToContext):$(inputs.params.pathToDockerFile)', '-t', '$(inputs.params.imageUrl):$(inputs.params.imageTag)', '.']
+#wk command: ['buildah', 'bud', '--tls-verify=$(inputs.params.TLSVERIFY)','-t', 'ace11002mqc91ms2:latest','github.com/DAVEXACOM/ibm-ace-mqc-soe-ms2-build']  
+#wk command: ['buildah', 'bud', '--tls-verify=$(inputs.params.TLSVERIFY)','-t', 'ace11002mqc91ms2:latest','github.com/DAVEXACOM/ibm-ace-mqc-soe-ms2-build']
+    command: ['buildah', 'bud', '--tls-verify=$(inputs.params.TLSVERIFY)','-t', '$(inputs.params.imageUrl):$(inputs.params.imageTag)','github.com/DAVEXACOM/ibm-ace-mqc-soe-ms2-build']
+
     volumeMounts:
     - name: varlibcontainers
       mountPath: /var/lib/containers
@@ -48,8 +44,9 @@ spec:
   - name: push
     image: quay.io/buildah/stable:v1.11.0
     workingDir: /workspace/source
-#    command: ['buildah', 'push', '--tls-verify=$(inputs.params.TLSVERIFY)', '$(inputs.params.imageUrl):$(inputs.params.imageTag)', 'image-registry.openshift-image-registry.svc:5000/$(inputs.params.imageUrl):$(inputs.params.imageTag)']
-    command: ['buildah', 'push', '--tls-verify=false', 'ace11002mqc91ms2:latest','image-registry.openshift-image-registry.svc:5000/da-build-project/ace11002mqc91ms2:latest']
+#   command: ['buildah', 'push', '--tls-verify=$(inputs.params.TLSVERIFY)', '$(inputs.params.imageUrl):$(inputs.params.imageTag)', 'image-registry.openshift-image-registry.svc:5000/$(inputs.params.imageUrl):$(inputs.params.imageTag)']
+#wk command: ['buildah', 'push', '--tls-verify=false', 'ace11002mqc91ms2:latest','image-registry.openshift-image-registry.svc:5000/da-build-project/ace11002mqc91ms2:latest']
+    command: ['buildah', 'push', '--tls-verify=$(inputs.params.TLSVERIFY)', '$(inputs.params.imageUrl):$(inputs.params.imageTag)','image-registry.openshift-image-registry.svc:5000/da-build-project/ace11002mqc91ms2:latest']
 
     volumeMounts:
     - name: varlibcontainers
