@@ -1,0 +1,14 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  generateName: build-and-deploy-pipelinerun-
+spec:
+  pipelineRef:
+    name: build-and-deploy
+  resources:
+    - name: acems-repo
+      resourceRef:
+        name: acems1-repo
+    - name: acems-image
+      resourceRef:
+        name: acems1-image

@@ -1,0 +1,38 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: build-and-deploy
+spec:
+  resources:
+    - name: acems1-repo
+      type: git
+    - name: acems1-image
+      type: image
+
+  tasks:
+    - name: build-api
+      taskRef:
+        name: buildah
+        kind: ClusterTask
+      resources:
+        inputs:
+          - name: source
+            resource: acems1-repo
+        outputs:
+          - name: image
+            resource: acems1-image
+      params:
+        - name: TLSVERIFY
+          value: "false"
+    - name: update-api-image
+      taskRef:
+        name: update-deployment
+      resources:
+        inputs:
+          - name: image
+            resource: acems1-image
+      params:
+        - name: deployment
+          value: "acems1"
+      runAfter:
+        - build-api

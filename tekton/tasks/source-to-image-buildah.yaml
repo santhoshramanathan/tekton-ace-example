@@ -1,0 +1,62 @@
+# just attempting to squeeze a buildah in in place into this example that was based on kaniko builder
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: source-to-image-buildah
+spec:
+  inputs:
+    resources:
+      - name: git-source
+        type: git
+    params:
+      - name: pathToContext
+        description: The path to the build context, used by Kaniko - within the workspace
+        default: ./
+      - name: pathToDockerFile
+        description: The path to the dockerfile to build (relative to the context)
+        default: Dockerfile
+      - name: imageUrl
+        description: Url of image repository
+      - name: imageTag
+        description: Tag to apply to the built image
+        default: "latest"  
+      - name: TLSVERIFY
+        description: Do not verify the TLS on the registry endpoint (for push/pull to a non-TLS registry)
+        default: "false"
+
+
+  steps:
+
+  - name: build
+    image: quay.io/buildah/stable:v1.11.0
+    workingDir: /workspace/source
+# https://github.com/openshift/pipelines-tutorial the doco here says the example pipeline does a clone as step 1 but I see no evidence of a clone hence no dockerfile in working dir    
+#    command: ['buildah', 'bud', '--tls-verify=$(inputs.params.TLSVERIFY)', '--layers', '-f', '$(inputs.params.pathToContext):$(inputs.params.pathToDockerFile)', '-t', '$(inputs.params.imageUrl):$(inputs.params.imageTag)', '.']
+#    command: ['buildah', 'bud', 'github.com/DAVEXACOM/ibm-ace-mqc-soe-ms2-build']
+#    command: ['buildah', 'bud', '$(inputs.resources.git-source.url)']
+  
+#    command: ['buildah', 'bud', 'github.com/DAVEXACOM/ibm-ace-mqc-soe-ms2-build' ,'ace11002mqc91soe:latest' '-t' 'ace11002mqc91msDA:latest']
+    command: ['buildah', 'bud', '-t', 'ace11002mqc91ms2:latest','github.com/DAVEXACOM/ibm-ace-mqc-soe-ms2-build']
+#    command: ['buildah', 'bud', '--tls-verify=false', 'github.com/DAVEXACOM/ibm-ace-mqc-soe-ms2-build','ace11002mqc91msDA:latest']
+#    command: ['buildah', 'bud', '--tls-verify=false','--layers', '-f', './Dockerfile', '-t' ,'image-registry.openshift-image-registry.svc:5000/ace11002mqc91msDA:latest']
+    volumeMounts:
+    - name: varlibcontainers
+      mountPath: /var/lib/containers
+    securityContext:
+      privileged: true
+
+  - name: push
+    image: quay.io/buildah/stable:v1.11.0
+    workingDir: /workspace/source
+#    command: ['buildah', 'push', '--tls-verify=$(inputs.params.TLSVERIFY)', '$(inputs.params.imageUrl):$(inputs.params.imageTag)', 'image-registry.openshift-image-registry.svc:5000/$(inputs.params.imageUrl):$(inputs.params.imageTag)']
+    command: ['buildah', 'push', '--tls-verify=false', 'ace11002mqc91ms2:latest','image-registry.openshift-image-registry.svc:5000/da-build-project/ace11002mqc91ms2:latest']
+
+    volumeMounts:
+    - name: varlibcontainers
+      mountPath: /var/lib/containers
+
+    securityContext:
+      privileged: true
+  volumes:
+  - name: varlibcontainers
+    emptyDir: {}

@@ -1,0 +1,30 @@
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: acems1-repo
+spec:
+  type: git
+  params:
+    - name: url
+      value: https://github.com/DAVEXACOM/ibm-ace-mqc-soe-ms1-build.git
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: acesoe-image
+spec:
+  type: image
+  params:
+    - name: url
+      value: image-registry.openshift-image-registry.svc:5000/da-build-project/ace11002mqc91soe:latest
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: acems1-image
+spec:
+  type: image
+  params:
+    - name: url
+      value: image-registry.openshift-image-registry.svc:5000/da-build-project/ibm-ace-mqc-soe-ms1-build:latest
