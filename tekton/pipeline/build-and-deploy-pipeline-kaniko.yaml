@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1alpha1
 kind: Pipeline
 metadata:
-  name: build-and-deploy-pipeline
+  name: build-and-deploy-pipeline-kaniko
 spec:
   resources:
     - name: git-source
@@ -17,9 +17,9 @@ spec:
     - name: imageTag
       description: Tag to apply to the built image
   tasks:
-  - name: source-to-image
+  - name: source-to-image-kaniko
     taskRef:
-      name: source-to-image
+      name: source-to-image-kaniko
     params:
       - name: pathToContext
         value: "$(params.pathToContext)"
@@ -35,7 +35,7 @@ spec:
     taskRef:
       name: deploy-using-kubectl
     runAfter:
-      - source-to-image
+      - source-to-image-kaniko
     params:
       - name: pathToYamlFile
         value:  "$(params.pathToYamlFile)"
