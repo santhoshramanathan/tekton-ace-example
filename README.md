@@ -2,6 +2,9 @@
 
 Tekton is an open source project to configure and run CI/CD pipelines within a Kubernetes cluster.
 
+## Documentation
+See section "OpenShift Pipelines - Tekton" in tekton-ace-example/doc/Developer Experience for ACE MQ using RHOS and Tekton v1.1.doc
+This document also covers using out of the box RHOS facilities for building and deploying ACE (and MQ) custom images in its earlier sections that migh also be of interest to developers working with ACE or MQ
 
 ## Introduction
 
@@ -9,18 +12,29 @@ Example file set to build and deploy IBM ACE
 
 ## Instructions
 
-For use in conjunction with source Git repos - https://github.com/DAVEXACOM/ibm-ace-mqc-soe-ms2-build
+You will need your RHOS adminstrator to grant your user and namespace pipeline access rights OR follow other tekton tutorial instructions for creating a service account for pipelines.
+
+
+For use in conjunction with source Git repos - https://github.com/DAVEXACOM/ibm-ace-mqc-soe-ms2-build ACE MS 2 is a standalone ACE restful service that returns a string in an array after whatever data is passed in.
+
 
 src\Dockerfile in this repos is copy of the docker file in https://github.com/DAVEXACOM/ibm-ace-mqc-soe-ms2-build
 
+
 acemsdep\ibmace.yaml creates the deployment config in RHOS and has a copy in the https://github.com/DAVEXACOM/ibm-ace-mqc-soe-ms2-build
+
 acemsdep\create-tt-acems2-service.yaml - a service definition to expose the ace deployment created by tekton - I have not included this in the pipeline - I manually create it in RHOS
+
 acemsdep\create-tt-acems2-route.yaml - a route definition to expose the ace deployment created by tekton - I have not included this in the pipeline - I manually create it in RHOS
+
 tekton directory has the tekton YAML files for building and deploying with
+	
 	a) Kaniko - do not use these - kaniko has a restriction that it must run as root. ACE builds don't allow that. The pipeline works but the image crashloops. Wait until Kaniko remove the restriction.
+	
 	b) Buildah - I took the published standard Buildah clustertask and refactored it as a ("user") task with parameter and resource settings that are a match for Kaniko. This way the rest of the tekton artifacts remain unchanged and Kaniko and buildah source-to-image( build and push) tasks can be swapped in and out when Kaniko has the root user restriction removed at some point.
 
 Use OC CREATE commands to load the tekton artifacts into your RHOS environment
+
 resources.yaml
 source-to-image-buildah.yaml
 deploy-using-kubectl-common.yaml
