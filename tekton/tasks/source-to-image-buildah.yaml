@@ -33,7 +33,7 @@ spec:
 #   command: ['buildah', 'bud', '--tls-verify=$(inputs.params.TLSVERIFY)', '--layers', '-f', '$(inputs.params.pathToContext):$(inputs.params.pathToDockerFile)', '-t', '$(inputs.params.imageUrl):$(inputs.params.imageTag)', '.']
 #wk command: ['buildah', 'bud', '--tls-verify=$(inputs.params.TLSVERIFY)','-t', 'ace11002mqc91ms2:latest','github.com/DAVEXACOM/ibm-ace-mqc-soe-ms2-build']  
 #wk command: ['buildah', 'bud', '--tls-verify=$(inputs.params.TLSVERIFY)','-t', 'ace11002mqc91ms2:latest','github.com/DAVEXACOM/ibm-ace-mqc-soe-ms2-build']
-    command: ['buildah', 'bud', '--tls-verify=$(inputs.params.TLSVERIFY)','-t', '$(inputs.params.imageUrl):$(inputs.params.imageTag)','github.com/DAVEXACOM/ibm-ace-mqc-soe-ms2-build']
+    command: ['buildah', 'bud', '--tls-verify=$(inputs.params.TLSVERIFY)','-t', '$(inputs.params.imageUrl):$(inputs.params.imageTag)','github.com/santhoshramanathan/tekton-ace-example.git']
 
     volumeMounts:
     - name: varlibcontainers
@@ -46,7 +46,7 @@ spec:
     workingDir: /workspace/source
 #   command: ['buildah', 'push', '--tls-verify=$(inputs.params.TLSVERIFY)', '$(inputs.params.imageUrl):$(inputs.params.imageTag)', 'image-registry.openshift-image-registry.svc:5000/$(inputs.params.imageUrl):$(inputs.params.imageTag)']
 #wk command: ['buildah', 'push', '--tls-verify=false', 'ace11002mqc91ms2:latest','image-registry.openshift-image-registry.svc:5000/da-build-project/ace11002mqc91ms2:latest']
-    command: ['buildah', 'push', '--tls-verify=$(inputs.params.TLSVERIFY)', '$(inputs.params.imageUrl):$(inputs.params.imageTag)','image-registry.openshift-image-registry.svc:5000/da-build-project/ace11002mqc91ms2:latest']
+    command: ['buildah', 'push', '--tls-verify=$(inputs.params.TLSVERIFY)', '$(inputs.params.imageUrl):$(inputs.params.imageTag)','image-registry.openshift-image-registry.svc:5000/ace/ace11002mqc91ms2:latest']
 
     volumeMounts:
     - name: varlibcontainers

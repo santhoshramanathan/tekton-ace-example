@@ -15,6 +15,6 @@ spec:
     - name: pathToContext
       value: ./     
     - name: imageUrl
-      value: image-registry.openshift-image-registry.svc:5000/da-build-project/ace11002mqc91ms2
+      value: image-registry.openshift-image-registry.svc:5000/ace/ace11002mqc91ms2
     - name: imageTag
       value: "latest"
